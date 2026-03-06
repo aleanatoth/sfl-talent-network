@@ -406,8 +406,8 @@ nav{background:#111;height:66px;padding:0 40px;display:flex;align-items:center;j
 
 <script>
 // ── PASTE YOUR GOOGLE APPS SCRIPT URL HERE ───────────
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_ID/exec';
-// ─────────────────────────────────────────────────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8hO-jpyHiKSCG-_y418If66IJIj9Ev-uDc1yMWQOTrCyCsDiFGTXB7cWKjBX8Ctg4/exec';
+  // ─────────────────────────────────────────────────────
 
 let uType='student';
 function setType(t){uType=t;document.getElementById('t-s').classList.toggle('active',t==='student');document.getElementById('t-a').classList.toggle('active',t==='alumni')}
@@ -486,7 +486,7 @@ async function submitProfile(){
   };
 
   try {
-    const res = await fetch(APPS_SCRIPT_URL, {
+    const res = await fetch(https://script.google.com/macros/s/AKfycby8hO-jpyHiKSCG-_y418If66IJIj9Ev-uDc1yMWQOTrCyCsDiFGTXB7cWKjBX8Ctg4/exec, {
       method: 'POST',
       body: JSON.stringify(profile)
     });
