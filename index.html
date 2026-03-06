@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SFL Talent Network</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Helvetica Neue',Arial,sans-serif;background:#f5f5f5;color:#111;min-height:100vh}
+
+/* NAV */
+nav{background:#111;height:66px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:3px solid #f5c518}
+.logo{display:flex;align-items:center;gap:12px;cursor:pointer}
+.logo img{height:36px;width:36px;object-fit:contain;filter:brightness(0) invert(1)}
+.logo-fb{display:none;width:36px;height:36px;background:#f5c518;border-radius:3px;align-items:center;justify-content:center;font-weight:900;color:#111;font-size:12px}
+.logo-text strong{color:#fff;font-size:13px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;display:block;line-height:1.2}
+.logo-text span{color:#f5c518;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.nav-back{color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;background:none;border:none}
+.nav-back:hover{color:#f5c518}
+
+/* SCREENS */
+.screen{display:none}.screen.active{display:block}
+
+/* HOME */
+.home-split{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 66px)}
+.home-left{background:#111;color:#fff;padding:72px 56px;display:flex;flex-direction:column;justify-content:center}
+.home-left h1{font-size:42px;font-weight:900;line-height:1.15;margin-bottom:18px}
+.home-left h1 em{color:#f5c518;font-style:normal}
+.home-left p{font-size:15px;opacity:.7;line-height:1.7;margin-bottom:36px;max-width:400px}
+.trust-row{display:flex;flex-wrap:wrap;gap:14px}
+.trust-item{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.55)}
+.trust-icon{color:#f5c518;font-size:15px}
+
+.home-right{background:#fff;display:flex;align-items:center;justify-content:center;padding:48px 40px}
+.quick-card{width:100%;max-width:360px}
+.quick-card h2{font-size:20px;font-weight:900;color:#111;margin-bottom:4px}
+.quick-card .sub{font-size:13px;color:#888;margin-bottom:24px}
+
+.toggle-row{display:flex;background:#f0f0f0;border-radius:4px;padding:3px;margin-bottom:20px}
+.toggle-btn{flex:1;padding:9px;border:none;background:transparent;border-radius:3px;font-size:13px;font-weight:700;cursor:pointer;color:#888;transition:all .18s}
+.toggle-btn.active{background:#111;color:#f5c518}
+
+.inp{width:100%;padding:11px 13px;border:1.5px solid #ddd;border-radius:4px;font-size:14px;outline:none;margin-bottom:10px;transition:border .18s}
+.inp:focus{border-color:#111}
+.btn-main{width:100%;padding:13px;background:#f5c518;color:#111;border:none;border-radius:4px;font-size:13px;font-weight:900;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:opacity .18s}
+.btn-main:hover{opacity:.85}
+.divider-or{text-align:center;color:#ccc;font-size:12px;margin:14px 0;position:relative}
+.divider-or::before,.divider-or::after{content:'';position:absolute;top:50%;width:43%;height:1px;background:#eee}
+.divider-or::before{left:0}.divider-or::after{right:0}
+.link-btn{width:100%;text-align:center;color:#888;font-size:13px;background:none;border:none;cursor:pointer}
+.link-btn:hover{color:#111}
+
+/* ONBOARDING */
+.onboard-wrap{min-height:calc(100vh - 66px);display:flex}
+.sidebar{width:240px;background:#111;padding:36px 24px;flex-shrink:0}
+.sidebar h3{color:rgba(255,255,255,.35);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
+.step-item{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:4px;margin-bottom:2px}
+.step-item.active{background:rgba(245,197,24,.1)}
+.step-num{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);flex-shrink:0}
+.step-item.active .step-num{border-color:#f5c518;color:#f5c518}
+.step-item.done .step-num{background:#f5c518;border-color:#f5c518;color:#111;font-size:12px}
+.step-label{color:rgba(255,255,255,.5);font-size:13px;font-weight:600}
+.step-item.active .step-label{color:#fff}
+.step-item.done .step-label{color:rgba(255,255,255,.4)}
+
+.onboard-main{flex:1;padding:48px 52px;overflow-y:auto;background:#f5f5f5}
+
+.progress-wrap{background:#e0e0e0;border-radius:3px;height:4px;margin-bottom:36px}
+.progress-bar{height:4px;border-radius:3px;background:#f5c518;transition:width .4s}
+
+.step-tag{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#f5c518;background:#111;display:inline-block;padding:3px 10px;border-radius:2px;margin-bottom:10px}
+.step-header h2{font-size:26px;font-weight:900;color:#111;margin-bottom:6px}
+.step-header p{font-size:14px;color:#777;line-height:1.6;margin-bottom:32px}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.span2{grid-column:span 2}
+.field label{font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select,.field textarea{padding:10px 13px;border:1.5px solid #ddd;border-radius:4px;font-size:14px;outline:none;background:#fff;transition:border .18s;font-family:inherit}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#111}
+.field textarea{resize:vertical;min-height:80px}
+
+.chip-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+.chip{padding:7px 14px;border-radius:3px;border:1.5px solid #ddd;font-size:13px;font-weight:600;cursor:pointer;background:#fff;color:#666;transition:all .15s;user-select:none}
+.chip:hover{border-color:#111;color:#111}
+.chip.on{background:#111;border-color:#111;color:#f5c518}
+
+.upload-box{border:2px dashed #ccc;border-radius:6px;padding:36px;text-align:center;cursor:pointer;background:#fff;transition:all .18s;margin-bottom:20px}
+.upload-box:hover{border-color:#111}
+.upload-box .uico{font-size:32px;margin-bottom:8px}
+.upload-box p{font-size:13px;color:#999;line-height:1.5}
+.upload-box .fname{font-size:13px;color:#111;font-weight:700;margin-top:8px}
+
+.step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:36px;padding-top:20px;border-top:1px solid #e0e0e0}
+.btn-back{background:none;border:none;color:#aaa;font-size:13px;font-weight:600;cursor:pointer}
+.btn-back:hover{color:#111}
+.btn-next{padding:11px 28px;background:#111;color:#f5c518;border:none;border-radius:4px;font-size:13px;font-weight:900;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:opacity .18s}
+.btn-next:hover{opacity:.8}
+.btn-next.submit{background:#f5c518;color:#111}
+
+/* DONE */
+.done-wrap{min-height:calc(100vh - 66px);display:flex;align-items:center;justify-content:center;padding:48px 24px;background:#111}
+.done-card{background:#fff;border-radius:8px;padding:52px 44px;max-width:520px;width:100%;text-align:center}
+.done-card .dico{font-size:48px;margin-bottom:16px}
+.done-card h2{font-size:24px;font-weight:900;color:#111;margin-bottom:10px}
+.done-card p{font-size:14px;color:#777;line-height:1.7;margin-bottom:24px}
+.summary{background:#f5f5f5;border-radius:6px;padding:18px 22px;text-align:left;margin-bottom:24px}
+.s-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e8e8e8;font-size:13px}
+.s-row:last-child{border:none}
+.s-label{color:#999;font-weight:600}
+.s-val{color:#111;font-weight:700}
+.done-btns{display:flex;flex-direction:column;gap:10px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="show('home')">
+    <img src="https://studentsforliberty.org/wp-content/uploads/128x128%20Badges%20FINAL/SFL-logo.svg"
+         alt="SFL" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+    <div class="logo-fb">SFL</div>
+    <div class="logo-text">
+      <strong>Students For Liberty</strong>
+      <span>Talent Network</span>
+    </div>
+  </div>
+  <button class="nav-back" onclick="show('home')">← Home</button>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="screen active">
+  <div class="home-split">
+    <div class="home-left">
+      <h1>Your career in <em>liberty</em><br>starts here.</h1>
+      <p>Create your profile. Get discovered by SFL and our network of liberty-aligned partner organizations.</p>
+      <div class="trust-row">
+        <div class="trust-item"><span class="trust-icon">🏛️</span> Policy & Law</div>
+        <div class="trust-item"><span class="trust-icon">📰</span> Media & Research</div>
+        <div class="trust-item"><span class="trust-icon">🌍</span> Nonprofits</div>
+        <div class="trust-item"><span class="trust-icon">💼</span> Private Sector</div>
+      </div>
+    </div>
+    <div class="home-right">
+      <div class="quick-card">
+        <h2>Create Your Profile</h2>
+        <p class="sub">Free. Takes about 5 minutes.</p>
+        <div class="toggle-row">
+          <button class="toggle-btn active" id="t-s" onclick="setType('student')">Student</button>
+          <button class="toggle-btn" id="t-a" onclick="setType('alumni')">Alumni</button>
+        </div>
+        <input class="inp" type="text" id="h-name" placeholder="Full name"/>
+        <input class="inp" type="email" id="h-email" placeholder="Email address"/>
+        <input class="inp" type="password" placeholder="Create a password"/>
+        <button class="btn-main" onclick="startOnboard()">Get Started →</button>
+        <div class="divider-or">or</div>
+        <button class="link-btn" onclick="startOnboard()">Already have an account? Log in</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboard" class="screen">
+  <div class="onboard-wrap">
+    <div class="sidebar">
+      <h3>Your Profile</h3>
+      <div class="step-item active" id="si-1"><div class="step-num">1</div><div class="step-label">About You</div></div>
+      <div class="step-item" id="si-2"><div class="step-num">2</div><div class="step-label">Career Goals</div></div>
+      <div class="step-item" id="si-3"><div class="step-num">3</div><div class="step-label">Skills</div></div>
+      <div class="step-item" id="si-4"><div class="step-num">4</div><div class="step-label">Values</div></div>
+      <div class="step-item" id="si-5"><div class="step-num">5</div><div class="step-label">Resume</div></div>
+    </div>
+
+    <div class="onboard-main">
+      <div class="progress-wrap"><div class="progress-bar" id="pbar" style="width:20%"></div></div>
+
+      <!-- STEP 1 -->
+      <div id="step-1">
+        <div class="step-header">
+          <div class="step-tag">1 of 5</div>
+          <h2>About you</h2>
+          <p>Basic info to set up your profile.</p>
+        </div>
+        <div class="form-grid">
+          <div class="field"><label>First Name</label><input type="text" id="s1-first" placeholder="Jane"/></div>
+          <div class="field"><label>Last Name</label><input type="text" id="s1-last" placeholder="Doe"/></div>
+          <div class="field"><label>Email</label><input type="email" id="s1-email" placeholder="jane@university.edu"/></div>
+          <div class="field"><label>Phone</label><input type="tel" placeholder="+1 (555) 000-0000"/></div>
+          <div class="field"><label>State / Country</label>
+            <select><option value="">Select…</option><option>Alabama</option><option>Arizona</option><option>California</option><option>Colorado</option><option>Florida</option><option>Georgia</option><option>Illinois</option><option>New York</option><option>Texas</option><option>Virginia</option><option>Washington</option><option>International</option></select>
+          </div>
+          <div class="field"><label>I am a</label>
+            <select id="s1-type"><option value="student">Current Student</option><option value="alumni">Alumni</option></select>
+          </div>
+          <div class="field"><label>University</label><input type="text" placeholder="e.g. University of Virginia"/></div>
+          <div class="field"><label>Graduation Year</label>
+            <select><option>2026</option><option>2027</option><option>2028</option><option>2025</option><option>2024</option><option>2023</option><option>2022 or earlier</option></select>
+          </div>
+          <div class="field span2"><label>Major / Field of Study</label><input type="text" placeholder="e.g. Economics, Political Science, Law…"/></div>
+          <div class="field span2"><label>SFL Involvement <span style="opacity:.5;text-transform:none;font-weight:400">(optional)</span></label>
+            <input type="text" placeholder="e.g. Local Coordinator, ISFLC attendee…"/>
+          </div>
+        </div>
+        <div class="step-nav"><span></span><button class="btn-next" onclick="goStep(2)">Next →</button></div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div id="step-2" style="display:none">
+        <div class="step-header">
+          <div class="step-tag">2 of 5</div>
+          <h2>Career goals</h2>
+          <p>Help us match you to the right opportunities.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div class="field"><label>Opportunity Type</label>
+            <div class="chip-wrap">
+              <div class="chip" onclick="tog(this)">Internship</div>
+              <div class="chip" onclick="tog(this)">Entry Level</div>
+              <div class="chip" onclick="tog(this)">Mid-Level</div>
+              <div class="chip" onclick="tog(this)">Director / Manager</div>
+              <div class="chip" onclick="tog(this)">Part-Time</div>
+              <div class="chip" onclick="tog(this)">Fellowship</div>
+            </div>
+          </div>
+          <div class="field"><label>Work Arrangement</label>
+            <div class="chip-wrap">
+              <div class="chip" onclick="tog(this)">Remote</div>
+              <div class="chip" onclick="tog(this)">In-Person</div>
+              <div class="chip" onclick="tog(this)">Hybrid</div>
+              <div class="chip" onclick="tog(this)">Open to Relocating</div>
+            </div>
+          </div>
+          <div class="field"><label>Sectors</label>
+            <div class="chip-wrap">
+              <div class="chip" onclick="tog(this)">Policy & Government</div>
+              <div class="chip" onclick="tog(this)">Law & Legal</div>
+              <div class="chip" onclick="tog(this)">Think Tanks</div>
+              <div class="chip" onclick="tog(this)">Nonprofit & Advocacy</div>
+              <div class="chip" onclick="tog(this)">Journalism & Media</div>
+              <div class="chip" onclick="tog(this)">Finance & Economics</div>
+              <div class="chip" onclick="tog(this)">Tech & Entrepreneurship</div>
+              <div class="chip" onclick="tog(this)">Education</div>
+              <div class="chip" onclick="tog(this)">International Affairs</div>
+            </div>
+          </div>
+          <div class="field"><label>Start Timeline</label>
+            <div class="chip-wrap">
+              <div class="chip" onclick="togOne(this,'tl')">Immediately</div>
+              <div class="chip" onclick="togOne(this,'tl')">Within 3 months</div>
+              <div class="chip" onclick="togOne(this,'tl')">3–6 months</div>
+              <div class="chip" onclick="togOne(this,'tl')">6–12 months</div>
+              <div class="chip" onclick="togOne(this,'tl')">Just exploring</div>
+            </div>
+          </div>
+          <div class="field"><label>First professional position?</label>
+            <div class="chip-wrap">
+              <div class="chip" onclick="togOne(this,'fj')">Yes</div>
+              <div class="chip" onclick="togOne(this,'fj')">No</div>
+            </div>
+          </div>
+          <div class="field span2"><label>Anything specific? <span style="opacity:.5;text-transform:none;font-weight:400">(optional)</span></label>
+            <textarea placeholder="e.g. Interested in criminal justice reform, ideally at a DC nonprofit…"></textarea>
+          </div>
+        </div>
+        <div class="step-nav"><button class="btn-back" onclick="goStep(1)">← Back</button><button class="btn-next" onclick="goStep(3)">Next →</button></div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div id="step-3" style="display:none">
+        <div class="step-header">
+          <div class="step-tag">3 of 5</div>
+          <h2>Skills & experience</h2>
+          <p>What do you bring to the table?</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div class="field"><label>Top Skills</label>
+            <div class="chip-wrap">
+              <div class="chip" onclick="tog(this)">Research & Writing</div>
+              <div class="chip" onclick="tog(this)">Public Speaking</div>
+              <div class="chip" onclick="tog(this)">Policy Analysis</div>
+              <div class="chip" onclick="tog(this)">Data & Statistics</div>
+              <div class="chip" onclick="tog(this)">Communications & PR</div>
+              <div class="chip" onclick="tog(this)">Social Media</div>
+              <div class="chip" onclick="tog(this)">Fundraising</div>
+              <div class="chip" onclick="tog(this)">Event Planning</div>
+              <div class="chip" onclick="tog(this)">Project Management</div>
+              <div class="chip" onclick="tog(this)">Legal Research</div>
+              <div class="chip" onclick="tog(this)">Graphic Design</div>
+              <div class="chip" onclick="tog(this)">Programming</div>
+            </div>
+          </div>
+          <div class="field"><label>Languages <span style="opacity:.5;text-transform:none;font-weight:400">(besides English)</span></label>
+            <div class="chip-wrap">
+              <div class="chip" onclick="tog(this)">Spanish</div>
+              <div class="chip" onclick="tog(this)">Portuguese</div>
+              <div class="chip" onclick="tog(this)">French</div>
+              <div class="chip" onclick="tog(this)">German</div>
+              <div class="chip" onclick="tog(this)">Arabic</div>
+              <div class="chip" onclick="tog(this)">Mandarin</div>
+              <div class="chip" onclick="tog(this)">Other</div>
+            </div>
+          </div>
+          <div class="field"><label>Experience Level</label>
+            <div class="chip-wrap">
+              <div class="chip" onclick="togOne(this,'exp')">No experience yet</div>
+              <div class="chip" onclick="togOne(this,'exp')">1–2 years</div>
+              <div class="chip" onclick="togOne(this,'exp')">3–5 years</div>
+              <div class="chip" onclick="togOne(this,'exp')">5+ years</div>
+            </div>
+          </div>
+          <div class="field"><label>Brief Bio <span style="opacity:.5;text-transform:none;font-weight:400">(2–3 sentences)</span></label>
+            <textarea placeholder="e.g. Junior at UVA studying Economics, passionate about free market healthcare policy. Former Mercatus Center intern and SFL chapter leader…"></textarea>
+          </div>
+          <div class="form-grid" style="margin-top:4px">
+            <div class="field"><label>LinkedIn <span style="opacity:.5;text-transform:none;font-weight:400">(optional)</span></label><input type="url" placeholder="linkedin.com/in/…"/></div>
+            <div class="field"><label>Portfolio / Website <span style="opacity:.5;text-transform:none;font-weight:400">(optional)</span></label><input type="url" placeholder="yoursite.com"/></div>
+          </div>
+        </div>
+        <div class="step-nav"><button class="btn-back" onclick="goStep(2)">← Back</button><button class="btn-next" onclick="goStep(4)">Next →</button></div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div id="step-4" style="display:none">
+        <div class="step-header">
+          <div class="step-tag">4 of 5</div>
+          <h2>Values & interests</h2>
+          <p>Help partners find the right mission fit.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div class="field"><label>Issues You Care About</label>
+            <div class="chip-wrap">
+              <div class="chip" onclick="tog(this)">Free Markets</div>
+              <div class="chip" onclick="tog(this)">Civil Liberties & Free Speech</div>
+              <div class="chip" onclick="tog(this)">Criminal Justice Reform</div>
+              <div class="chip" onclick="tog(this)">Education Freedom</div>
+              <div class="chip" onclick="tog(this)">Healthcare Policy</div>
+              <div class="chip" onclick="tog(this)">Foreign Policy</div>
+              <div class="chip" onclick="tog(this)">Drug Policy Reform</div>
+              <div class="chip" onclick="tog(this)">Immigration</div>
+              <div class="chip" onclick="tog(this)">Tech & Innovation</div>
+              <div class="chip" onclick="tog(this)">Property Rights</div>
+              <div class="chip" onclick="tog(this)">Environmental Policy</div>
+              <div class="chip" onclick="tog(this)">International Development</div>
+            </div>
+          </div>
+          <div class="field"><label>Culture Fit</label>
+            <div class="chip-wrap">
+              <div class="chip" onclick="tog(this)">Mission-driven</div>
+              <div class="chip" onclick="tog(this)">Entrepreneurial</div>
+              <div class="chip" onclick="tog(this)">Structured & Institutional</div>
+              <div class="chip" onclick="tog(this)">Small team</div>
+              <div class="chip" onclick="tog(this)">Large organization</div>
+              <div class="chip" onclick="tog(this)">Mentorship-focused</div>
+              <div class="chip" onclick="tog(this)">Fast-paced</div>
+            </div>
+          </div>
+          <div class="field"><label>How did you get involved with SFL / liberty ideas?</label>
+            <textarea placeholder="e.g. Found SFL at a campus fair. Reading Hayek changed how I think about economics and policy…"></textarea>
+          </div>
+        </div>
+        <div class="step-nav"><button class="btn-back" onclick="goStep(3)">← Back</button><button class="btn-next" onclick="goStep(5)">Next →</button></div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div id="step-5" style="display:none">
+        <div class="step-header">
+          <div class="step-tag">5 of 5</div>
+          <h2>Upload your resume</h2>
+          <p>The final piece of your profile.</p>
+        </div>
+        <div class="upload-box" onclick="document.getElementById('fi').click()">
+          <input type="file" id="fi" style="display:none" accept=".pdf,.doc,.docx" onchange="document.getElementById('fn').textContent=this.files[0]?'✓ '+this.files[0].name:''"/>
+          <div class="uico">📄</div>
+          <p>Click to upload — PDF, DOC, or DOCX · Max 5MB</p>
+          <div class="fname" id="fn"></div>
+        </div>
+        <div class="field" style="margin-bottom:8px"><label>Or paste a link</label><input type="url" placeholder="Google Drive, Dropbox, etc."/></div>
+        <p style="font-size:12px;color:#bbb;margin-top:16px;line-height:1.6">Your profile will be shared only with SFL and vetted partner organizations. It will never be sold or shared outside the network.</p>
+        <div class="step-nav"><button class="btn-back" onclick="goStep(4)">← Back</button><button class="btn-next submit" onclick="submitProfile()">Submit Profile ✓</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DONE -->
+<div id="done" class="screen">
+  <div class="done-wrap">
+    <div class="done-card">
+      <div class="dico">🎉</div>
+      <h2>You're in the network!</h2>
+      <p>Our Job Placement & Talent Development Officer will review your profile and reach out within a few business days.</p>
+      <div class="summary">
+        <div class="s-row"><span class="s-label">Name</span><span class="s-val" id="sum-name">—</span></div>
+        <div class="s-row"><span class="s-label">Status</span><span class="s-val" id="sum-type">—</span></div>
+        <div class="s-row"><span class="s-label">Email</span><span class="s-val" id="sum-email">—</span></div>
+        <div class="s-row"><span class="s-label">Profile</span><span class="s-val" style="color:#2ecc71">✓ Complete</span></div>
+      </div>
+      <div class="done-btns">
+        <button class="btn-main" onclick="alert('Opens calendar link')">📅 Schedule a Career Call</button>
+        <button class="btn-main" style="background:#111;color:#f5c518" onclick="show('onboard');goStep(1)">Edit My Profile</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── PASTE YOUR GOOGLE APPS SCRIPT URL HERE ───────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_ID/exec';
+// ─────────────────────────────────────────────────────
+
+let uType='student';
+function setType(t){uType=t;document.getElementById('t-s').classList.toggle('active',t==='student');document.getElementById('t-a').classList.toggle('active',t==='alumni')}
+
+function startOnboard(){
+  const n=document.getElementById('h-name').value,e=document.getElementById('h-email').value;
+  if(n){document.getElementById('s1-first').value=n.split(' ')[0]||'';document.getElementById('s1-last').value=n.split(' ').slice(1).join(' ')||''}
+  if(e) document.getElementById('s1-email').value=e;
+  document.getElementById('s1-type').value=uType;
+  show('onboard');goStep(1);
+}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+
+function goStep(n){
+  for(let i=1;i<=5;i++){
+    document.getElementById('step-'+i).style.display=i===n?'block':'none';
+    const si=document.getElementById('si-'+i);
+    si.classList.remove('active','done');
+    if(i<n)si.classList.add('done');
+    if(i===n)si.classList.add('active');
+    si.querySelector('.step-num').textContent=i<n?'✓':i;
+  }
+  document.getElementById('pbar').style.width=(n/5*100)+'%';
+  if(n===5){
+    document.getElementById('sum-name').textContent=(document.getElementById('s1-first').value||'—')+' '+(document.getElementById('s1-last').value||'');
+    document.getElementById('sum-email').textContent=document.getElementById('s1-email').value||'—';
+    document.getElementById('sum-type').textContent=document.getElementById('s1-type').value==='alumni'?'Alumni':'Student';
+  }
+}
+
+function tog(el){el.classList.toggle('on')}
+function togOne(el,g){document.querySelectorAll(`[onclick*="'${g}'"]`).forEach(c=>c.classList.remove('on'));el.classList.add('on')}
+
+function getChips(wrap){
+  return [...document.querySelectorAll(`#${wrap} .chip.on`)].map(c=>c.textContent.trim());
+}
+
+async function submitProfile(){
+  const btn = document.querySelector('.btn-next.submit');
+  btn.textContent = 'Submitting…';
+  btn.disabled = true;
+
+  const profile = {
+    // Step 1
+    first_name:       document.getElementById('s1-first').value,
+    last_name:        document.getElementById('s1-last').value,
+    email:            document.getElementById('s1-email').value,
+    phone:            document.querySelector('[placeholder="+1 (555) 000-0000"]')?.value,
+    state:            document.querySelector('#step-1 select')?.value,
+    user_type:        document.getElementById('s1-type').value,
+    university:       document.querySelector('[placeholder="e.g. University of Virginia"]')?.value,
+    graduation_year:  document.querySelectorAll('#step-1 select')[1]?.value,
+    major:            document.querySelector('[placeholder="e.g. Economics, Political Science, Law…"]')?.value,
+    sfl_involvement:  document.querySelector('[placeholder="e.g. Local Coordinator, ISFLC attendee…"]')?.value,
+    // Step 2
+    opportunity_types: getChips('step-2').filter(c=>['Internship','Entry Level','Mid-Level','Director / Manager','Part-Time','Fellowship'].includes(c)),
+    work_arrangement:  getChips('step-2').filter(c=>['Remote','In-Person','Hybrid','Open to Relocating'].includes(c)),
+    sectors:           getChips('step-2').filter(c=>['Policy & Government','Law & Legal','Think Tanks','Nonprofit & Advocacy','Journalism & Media','Finance & Economics','Tech & Entrepreneurship','Education','International Affairs'].includes(c)),
+    start_timeline:    document.querySelector('#step-2 .chip.on[onclick*="\'tl\'"]')?.textContent.trim(),
+    first_job:         document.querySelector('#step-2 .chip.on[onclick*="\'fj\'"]')?.textContent.trim()==='Yes',
+    career_notes:      document.querySelector('#step-2 textarea')?.value,
+    // Step 3
+    skills:            getChips('step-3').filter(c=>['Research & Writing','Public Speaking','Policy Analysis','Data & Statistics','Communications & PR','Social Media','Fundraising','Event Planning','Project Management','Legal Research','Graphic Design','Programming'].includes(c)),
+    languages:         getChips('step-3').filter(c=>['Spanish','Portuguese','French','German','Arabic','Mandarin','Other'].includes(c)),
+    experience_level:  document.querySelector('#step-3 .chip.on[onclick*="\'exp\'"]')?.textContent.trim(),
+    bio:               document.querySelector('#step-3 textarea')?.value,
+    linkedin:          document.querySelector('[placeholder="linkedin.com/in/…"]')?.value,
+    portfolio:         document.querySelector('[placeholder="yoursite.com"]')?.value,
+    // Step 4
+    issues:            getChips('step-4').filter(c=>['Free Markets','Civil Liberties & Free Speech','Criminal Justice Reform','Education Freedom','Healthcare Policy','Foreign Policy','Drug Policy Reform','Immigration','Tech & Innovation','Property Rights','Environmental Policy','International Development'].includes(c)),
+    culture_fit:       getChips('step-4').filter(c=>['Mission-driven','Entrepreneurial','Structured & Institutional','Small team','Large organization','Mentorship-focused','Fast-paced'].includes(c)),
+    liberty_story:     document.querySelector('#step-4 textarea')?.value,
+    // Step 5
+    resume_url:        document.querySelector('[placeholder="Google Drive, Dropbox, etc."]')?.value,
+  };
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(profile)
+    });
+    const result = await res.json();
+    if(!result.success) throw new Error(result.error);
+    show('done');
+  } catch(e){
+    alert('Something went wrong: ' + e.message + '\n\nDouble-check your Apps Script URL.');
+    btn.textContent = 'Submit Profile ✓';
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>https://script.google.com/macros/s/AKfycby8hO-jpyHiKSCG-_y418If66IJIj9Ev-uDc1yMWQOTrCyCsDiFGTXB7cWKjBX8Ctg4/exec
